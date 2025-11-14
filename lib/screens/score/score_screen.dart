@@ -1,39 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:quiz_app/constants.dart';
 import 'package:quiz_app/controllers/question_controller.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ScoreScreen extends StatelessWidget {
+  const ScoreScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    QuestionController _qnController = Get.put(QuestionController());
+    final qnController = Get.find<QuestionController>();
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          SvgPicture.asset("assets/icons/bg.svg", fit: BoxFit.fill),
+          SvgPicture.asset('assets/icons/bg.svg', fit: BoxFit.fill),
           Column(
             children: [
-              Spacer(flex: 3),
+              const Spacer(flex: 3),
               Text(
-                "Score",
+                'Score',
                 style: Theme.of(context)
-                    .textTheme
-                    .headline3
-                    .copyWith(color: kSecondaryColor),
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: kSecondaryColor) ??
+                    const TextStyle(
+                      color: kSecondaryColor,
+                      fontSize: 32,
+                    ),
               ),
-              Spacer(),
+              const Spacer(),
               Text(
-                "${_qnController.numOfCorrectAns * 10}/${_qnController.questions.length * 10}",
+                '${qnController.numOfCorrectAns * 10}/${qnController.questions.length * 10}',
                 style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    .copyWith(color: kSecondaryColor),
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(color: kSecondaryColor) ??
+                    const TextStyle(
+                      color: kSecondaryColor,
+                      fontSize: 24,
+                    ),
               ),
-              Spacer(flex: 3),
+              const Spacer(flex: 3),
             ],
-          )
+          ),
         ],
       ),
     );
