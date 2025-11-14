@@ -49,7 +49,7 @@ class ScoreScreen extends StatelessWidget {
                       children: [
                         const SizedBox(height: kDefaultPadding),
                         Text(
-                          'Parabens, ${qnController.playerName}!',
+                          'Parabéns, ${qnController.playerName}!',
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                                   .textTheme
@@ -67,6 +67,16 @@ class ScoreScreen extends StatelessWidget {
                                   ?.copyWith(color: kSecondaryColor) ??
                               const TextStyle(color: kSecondaryColor, fontSize: 32),
                         ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${qnController.totalQuestions} questões respondidas',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(color: Colors.white70) ??
+                              const TextStyle(color: Colors.white70, fontSize: 18),
+                        ),
                         const SizedBox(height: 12),
                         Text(
                           'Tempo: ${_formatDuration(qnController.elapsedTime)}',
@@ -81,7 +91,7 @@ class ScoreScreen extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () => _openRanking(),
+                            onPressed: _openRanking,
                             child: const Text('Ver Ranking'),
                           ),
                         ),

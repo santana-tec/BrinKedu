@@ -9,9 +9,15 @@ import 'package:quiz_app/services/database_service.dart';
 /// Ele é responsável por animar o tempo, mudar de página e salvar o ranking.
 class QuestionController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  QuestionController({required this.playerName});
+  QuestionController({
+    required this.playerName,
+    required this.questionCount,
+  }) {
+    _questions = _generateQuestions();
+  }
 
   final String playerName;
+  final int questionCount;
 
   late final AnimationController _animationController;
   late final Animation<double> _animation;
@@ -23,17 +29,23 @@ class QuestionController extends GetxController
   // Cronômetro usado para ranquear jogadores com o mesmo número de pontos.
   final Stopwatch _stopwatch = Stopwatch();
 
-  final List<Question> _questions = sampleData
-      .map(
-        (question) => Question(
+  late final List<Question> _questions;
+  List<Question> get questions => _questions;
+
+  List<Question> _generateQuestions() {
+    final slice =
+        questionCount > sampleData.length ? sampleData.length : questionCount;
+    return sampleData.take(slice).map(
+      (question) {
+        return Question(
           id: question['id'] as int,
           question: question['question'] as String,
           options: List<String>.from(question['options'] as List),
           answer: question['answer_index'] as int,
-        ),
-      )
-      .toList();
-  List<Question> get questions => _questions;
+        );
+      },
+    ).toList();
+  }
 
   bool _isAnswered = false;
   bool get isAnswered => _isAnswered;
@@ -127,6 +139,7 @@ class QuestionController extends GetxController
       score: totalScore,
       timeSpentMs: _stopwatch.elapsedMilliseconds,
       createdAt: DateTime.now(),
+      questionCount: totalQuestions,
     );
     await DatabaseService.instance.insertResult(result);
   }

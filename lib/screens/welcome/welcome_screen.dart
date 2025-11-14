@@ -17,6 +17,8 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   final TextEditingController _nameController = TextEditingController();
+  static const List<int> _questionOptions = [50, 100, 150, 200];
+  int _selectedQuestionCount = _questionOptions.first;
 
   @override
   void dispose() {
@@ -27,8 +29,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void _startQuiz() {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      Get.snackbar('Ops!', 'Informe seu nome para iniciar o quiz',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        'Ops!',
+        'Informe seu nome para iniciar a patrulha do conhecimento.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
     // Garantimos que não exista um controlador antigo na memória.
@@ -36,7 +41,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       Get.delete<QuestionController>();
     }
     _nameController.clear();
-    Get.to(() => QuizScreen(playerName: name));
+    Get.to(
+      () => QuizScreen(
+        playerName: name,
+        questionCount: _selectedQuestionCount,
+      ),
+    );
   }
 
   void _openRanking() {
@@ -50,15 +60,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-        SvgPicture.asset("assets/icons/bg.svg", fit: BoxFit.fill),
-        SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              // Usamos SingleChildScrollView + ConstrainedBox para evitar overflow
-              // e permitir que telas pequenas rolem o conteúdo livremente.
-              return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding,
+          SvgPicture.asset('assets/icons/bg.svg', fit: BoxFit.fill),
+          SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Scroll + altura mínima para adaptar em telas menores.
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: kDefaultPadding,
                     vertical: kDefaultPadding,
                   ),
                   child: ConstrainedBox(
@@ -69,13 +78,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       children: [
                         const SizedBox(height: kDefaultPadding),
                         Text(
-                          "Let's Play Quiz,",
+                          'Bora jogar o Quiz da Segurança?',
                           style: Theme.of(context)
                                   .textTheme
                                   .headlineMedium
                                   ?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold) ??
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ) ??
                               const TextStyle(
                                 color: Colors.white,
                                 fontSize: 32,
@@ -83,18 +93,47 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               ),
                         ),
                         const SizedBox(height: 8),
-                        const Text("Enter your informations below"),
+                        const Text(
+                          'Ajuste o capacete, respire fundo e mostre que a segurança do trabalho está em boas mãos!',
+                          style: TextStyle(color: Colors.white70),
+                        ),
                         const SizedBox(height: kDefaultPadding * 1.5),
                         TextField(
                           controller: _nameController,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color(0xFF1C2341),
-                            hintText: "Full Name",
+                            hintText: 'Digite seu nome completo',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
+                        ),
+                        const SizedBox(height: kDefaultPadding),
+                        Text(
+                          'Quantas questões você quer encarar hoje?',
+                          style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(color: Colors.white) ??
+                              const TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          children: _questionOptions.map((count) {
+                            final isSelected =
+                                _selectedQuestionCount == count;
+                            return ChoiceChip(
+                              label: Text('$count questões'),
+                              selected: isSelected,
+                              onSelected: (_) {
+                                setState(() {
+                                  _selectedQuestionCount = count;
+                                });
+                              },
+                            );
+                          }).toList(),
                         ),
                         const SizedBox(height: kDefaultPadding),
                         InkWell(
@@ -102,19 +141,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           child: Container(
                             width: double.infinity,
                             alignment: Alignment.center,
-                            padding: const EdgeInsets.all(
-                                kDefaultPadding * 0.75), // 15
+                            padding:
+                                const EdgeInsets.all(kDefaultPadding * 0.75),
                             decoration: const BoxDecoration(
                               gradient: kPrimaryGradient,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12),
+                              ),
                             ),
                             child: Text(
-                              "Lets Start Quiz",
+                              'Começar a patrulha segura',
                               style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(color: Colors.black),
+                                      .textTheme
+                                      .labelLarge
+                                      ?.copyWith(color: Colors.black) ??
+                                  const TextStyle(color: Colors.black),
                             ),
                           ),
                         ),

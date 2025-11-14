@@ -7,6 +7,7 @@ class QuizResult {
     required this.score,
     required this.timeSpentMs,
     required this.createdAt,
+    required this.questionCount,
   });
 
   final int? id;
@@ -14,6 +15,7 @@ class QuizResult {
   final int score;
   final int timeSpentMs;
   final DateTime createdAt;
+  final int questionCount;
 
   Duration get timeSpent => Duration(milliseconds: timeSpentMs);
 
@@ -23,6 +25,7 @@ class QuizResult {
     int? score,
     int? timeSpentMs,
     DateTime? createdAt,
+    int? questionCount,
   }) {
     return QuizResult(
       id: id ?? this.id,
@@ -30,6 +33,7 @@ class QuizResult {
       score: score ?? this.score,
       timeSpentMs: timeSpentMs ?? this.timeSpentMs,
       createdAt: createdAt ?? this.createdAt,
+      questionCount: questionCount ?? this.questionCount,
     );
   }
 
@@ -41,6 +45,7 @@ class QuizResult {
       score: map['score'] as int,
       timeSpentMs: map['time_spent_ms'] as int,
       createdAt: DateTime.parse(map['created_at'] as String),
+      questionCount: (map['question_count'] as int?) ?? 50,
     );
   }
 
@@ -52,6 +57,7 @@ class QuizResult {
       'score': score,
       'time_spent_ms': timeSpentMs,
       'created_at': createdAt.toIso8601String(),
+      'question_count': questionCount,
     };
   }
 }

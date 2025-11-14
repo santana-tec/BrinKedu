@@ -11,7 +11,7 @@ class DatabaseService {
   static final DatabaseService instance = DatabaseService._();
 
   static const _databaseName = 'quiz_app.db';
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
   static const _resultsTable = 'quiz_results';
 
   Database? _db;
@@ -24,18 +24,30 @@ class DatabaseService {
     _db = await openDatabase(
       path,
       version: _databaseVersion,
-      onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            player_name TEXT NOT NULL,
-            score INTEGER NOT NULL,
-            time_spent_ms INTEGER NOT NULL,
-            created_at TEXT NOT NULL
-          )
-        ''');
-      },
+      onCreate: _createDb,
+      onUpgrade: _upgradeDb,
     );
+  }
+
+  Future<void> _createDb(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE $_resultsTable (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        player_name TEXT NOT NULL,
+        score INTEGER NOT NULL,
+        time_spent_ms INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        question_count INTEGER NOT NULL
+      )
+    ''');
+  }
+
+  Future<void> _upgradeDb(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute(
+        'ALTER TABLE $_resultsTable ADD COLUMN question_count INTEGER NOT NULL DEFAULT 50',
+      );
+    }
   }
 
   /// Insere um novo resultado. Usamos conflict replace para atualizar tentativas repetidas.
@@ -58,5 +70,16 @@ class DatabaseService {
       orderBy: 'score DESC, time_spent_ms ASC, created_at DESC',
     );
     return rows.map(QuizResult.fromMap).toList();
+  }
+
+  /// Remove um resultado específico do ranking.
+  Future<void> deleteResult(int id) async {
+    final database = _db;
+    if (database == null) return;
+    await database.delete(
+      _resultsTable,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

@@ -6,14 +6,24 @@ import 'components/body.dart';
 
 /// Tela do quiz em si. Recebe o nome do jogador e registra o controlador GetX.
 class QuizScreen extends StatelessWidget {
-  const QuizScreen({super.key, required this.playerName});
+  const QuizScreen({
+    super.key,
+    required this.playerName,
+    required this.questionCount,
+  });
 
   final String playerName;
+  final int questionCount;
 
   @override
   Widget build(BuildContext context) {
     // Get.put injeta o controlador para que outros widgets o encontrem.
-    final controller = Get.put(QuestionController(playerName: playerName));
+    final controller = Get.put(
+      QuestionController(
+        playerName: playerName,
+        questionCount: questionCount,
+      ),
+    );
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
