@@ -5,6 +5,7 @@ import 'package:quiz_app/controllers/question_controller.dart';
 
 import '../../../constants.dart';
 
+/// Barra de progresso animada que acompanha o tempo disponível por pergunta.
 class ProgressBar extends StatelessWidget {
   const ProgressBar({super.key});
 
@@ -21,6 +22,7 @@ class ProgressBar extends StatelessWidget {
         builder: (controller) {
           return Stack(
             children: [
+              // LayoutBuilder nos dá a largura disponível para desenhar a barra colorida.
               LayoutBuilder(
                 builder: (context, constraints) => Container(
                   width: constraints.maxWidth * controller.animation.value,
@@ -30,6 +32,7 @@ class ProgressBar extends StatelessWidget {
                   ),
                 ),
               ),
+              // Sobrepomos texto e ícone mostrando o tempo restante.
               Positioned.fill(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

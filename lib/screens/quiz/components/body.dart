@@ -7,6 +7,8 @@ import 'package:quiz_app/controllers/question_controller.dart';
 import 'progress_bar.dart';
 import 'question_card.dart';
 
+/// Estrutura principal da tela do quiz:
+/// mostra barra de progresso, título e as perguntas dentro de um PageView.
 class Body extends StatelessWidget {
   const Body({super.key});
 
@@ -29,6 +31,7 @@ class Body extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                // Obx observa o valor reativo questionNumber e atualiza o texto automaticamente.
                 child: Obx(
                   () => Text.rich(
                     TextSpan(
@@ -59,6 +62,7 @@ class Body extends StatelessWidget {
               ),
               const Divider(thickness: 1.5),
               const SizedBox(height: kDefaultPadding),
+              // PageView exibe uma pergunta por vez e o usuário só avança via controlador.
               Expanded(
                 child: PageView.builder(
                   physics: const NeverScrollableScrollPhysics(),

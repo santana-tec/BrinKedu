@@ -4,6 +4,8 @@ import 'package:quiz_app/controllers/question_controller.dart';
 
 import '../../../constants.dart';
 
+/// Representa cada alternativa dentro do cartão de pergunta.
+/// O estado visual muda conforme a resposta correta/errada.
 class Option extends StatelessWidget {
   const Option({
     super.key,
@@ -19,6 +21,7 @@ class Option extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<QuestionController>(builder: (qnController) {
+      // Determina a cor da borda/texto conforme o estado da resposta.
       Color getTheRightColor() {
         if (qnController.isAnswered) {
           if (index == qnController.correctAns) {
@@ -31,6 +34,7 @@ class Option extends StatelessWidget {
         return kGrayColor;
       }
 
+      // Exibe um ícone de check ou X para feedback visual.
       IconData getTheRightIcon() {
         return getTheRightColor() == kRedColor ? Icons.close : Icons.done;
       }
@@ -47,12 +51,14 @@ class Option extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${index + 1}. $text',
-                style: TextStyle(color: optionColor, fontSize: 16),
+              Expanded(
+                child: Text(
+                  '${index + 1}. $text',
+                  style: TextStyle(color: optionColor, fontSize: 16),
+                ),
               ),
+              const SizedBox(width: 12),
               Container(
                 height: 26,
                 width: 26,
